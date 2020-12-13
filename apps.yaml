@@ -1,0 +1,4 @@
+---
+check_appliance:
+  module: checkappliance
+  class: CheckAppliance
