@@ -12,6 +12,7 @@ stats_root = 'statusCounters'               # The root level JSON element return
 primary_statistic = 's3'                    # The name of the JSON attribute that containes the 'main' statisict (e.g. s3 appears to be number of cycles).
 encryption_key = 'XXXXXXXXXXXXXXXX'         # The encryption key obtained from your appliance
 polling_interval = 15                       # How frequently check for the latest status.
+request_timeout = 10                        # Request timeout should be less than the polling interval to prevent threads backing up from failing requests.
 
 class CheckAppliance(hass.Hass):
     def initialize(self):
@@ -37,7 +38,7 @@ class CheckAppliance(hass.Hass):
         return self.get_data('getStatistics')
 
     def get_data(self, command):
-        res = requests.get('http://' + appliance_ip + '/http-' + command + '.json?encrypted=1')
+        res = requests.get('http://' + appliance_ip + '/http-' + command + '.json?encrypted=1', timeout=request_timeout)
 
         return json.loads(self.decrypt(codecs.decode(res.text, 'hex'), encryption_key))
 
